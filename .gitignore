@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+bower_components/
+db.sqlite3
+package-lock.json
+.idea/
