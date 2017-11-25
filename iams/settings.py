@@ -158,5 +158,8 @@ BOWER_INSTALLED_APPS = (
     'select2',
     'datatable',
     'ionicons',
+    'select2-bootstrap-theme',
+    'layer',
+    'dragula.js',
 )
 
