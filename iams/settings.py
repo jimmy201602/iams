@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'adminlte',
     'iams',
     'datatableview',
+    'guardian',
 ]
 
 MIDDLEWARE = [
