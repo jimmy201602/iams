@@ -164,3 +164,8 @@ BOWER_INSTALLED_APPS = (
     'dragula.js',
 )
 
+#guardian settings
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
