@@ -8,4 +8,4 @@ from django.shortcuts import render_to_response
 
 class Index(LoginRequiredMixin,View):
     def get(self,request):
-        return render_to_response('index.html',locals())
+        return render_to_response('base_table.html',locals())

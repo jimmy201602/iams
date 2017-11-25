@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section class="content">
+    <form id="id-m-form" action="" method="post" class="form-horizontal {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">
+        {% block right_side_content %}
+        {% block right_side_content_top %}
+        {% endblock %}
+        <div class="box">
+            <div class="box-header">
+            </div>
+            <div class="box-body">
+                {% crispy form %}
+                <div class="form-group">
+                    <div class="col-xs-offset-2 col-xs-10">
+                        {% block form_bottom_ext %}
+                        {% endblock %}
+                        {% block form_act_btns %}
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-default goback">Cancel</button>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </form>
+</section>
+{% endblock %}
