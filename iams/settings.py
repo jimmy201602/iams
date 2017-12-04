@@ -25,7 +25,7 @@ SECRET_KEY = ')r3(k$xbas1td&(@%2=smi%f!#m(*+-32opditr=7t0k*eof^3'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*",]
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'iams',
     'datatableview',
     'guardian',
+    'cmdb',
 ]
 
 MIDDLEWARE = [
