@@ -15,7 +15,6 @@ class Role(models.Model):
     
 class RolePermission(models.Model):
     name = models.ForeignKey(Role)
-    users = models.ManyToManyField()
     permission = models.ManyToManyField()
     createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
     updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)
