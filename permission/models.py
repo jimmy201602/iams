@@ -7,8 +7,8 @@ from django.db import models
 class Role(models.Model):
     name = models.CharField(max_length=50,verbose_name="Name",unique=True,blank=False)
     description = models.TextField(verbose_name="Description",blank=True)
-    createtime = models.DateTimeField(verbose_name='Create time',auto_now=True,editable=False)
-    updatetime = models.DateTimeField(verbose_name='Update time',auto_now_add=True,editable=False)
+    createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
+    updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)
     
     def __unicode__(self):
         return self.name
