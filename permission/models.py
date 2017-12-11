@@ -29,4 +29,13 @@ class RoleMember(models.Model):
     updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)
     
     def __unicode__(self):
-        return self.name.name    
+        return self.name.name
+
+class PermissionList(models.Model):
+    name = models.CharField(max_length=50,verbose_name="App Name",unique=True,blank=False)
+    permissions = models.ManyToManyField()
+    createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
+    updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)
+    
+    def __unicode__(self):
+        return self.name    
