@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-
+from django_hstore.hstore import DictionaryField
 
 ASSET_STATUS = (
     (str(1), "使用中"),
@@ -97,3 +97,146 @@ class InterFace(models.Model):
 
     def __str__(self):
         return self.name
+
+class Category(models.Model):  
+    name = models.CharField(max_length=40) 
+    createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
+    updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)   
+    
+    def __str__(self):
+        return self.name
+    
+class Equipment(models.Model):  
+    name = models.CharField(max_length=100)  
+    category = models.ForeignKey(Category, related_name="cg_equip_list")
+    createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
+    updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True) 
+    
+    def __str__(self):
+        return '{0}-{1}'.format(self.category.name,self.name)
+    
+class Characteristic(models.Model):  
+    category = models.ForeignKey(Category, related_name="eq_characteristics")  
+    name = models.CharField(max_length=40)
+    schema = DictionaryField(schema=[
+            {
+                'name': 'number',
+                'class': 'IntegerField',
+                'kwargs': {
+                    'default': 0
+                }
+            },
+            {
+                'name': 'float',
+                'class': models.FloatField,
+                'kwargs': {
+                    'default': 1.0
+                }
+            },
+            {
+                'name': 'boolean',
+                'class': 'BooleanField',
+            },
+            {
+                'name': 'boolean_true',
+                'class': 'BooleanField',
+                'kwargs': {
+                    'verbose_name': 'boolean true',
+                    'default': True
+                }
+            },
+            {
+                'name': 'char',
+                'class': 'CharField',
+                'kwargs': {
+                    'default': 'test', 'blank': True, 'max_length': 10
+                }
+            },
+            {
+                'name': 'text',
+                'class': 'TextField',
+                'kwargs': {
+                    'blank': True
+                }
+            },
+            {
+                'name': 'choice',
+                'class': 'CharField',
+                'kwargs': {
+                    'blank': True,
+                    'max_length': 10,
+                    'choices': (('choice1', 'choice1'), ('choice2', 'choice2')),
+                    'default': 'choice1'
+                }
+            },
+            {
+                'name': 'choice2',
+                'class': 'CharField',
+                'kwargs': {
+                    'blank': True,
+                    'max_length': 10,
+                    'choices': (('choice1', 'choice1'), ('choice2', 'choice2')),
+                }
+            },
+            {
+                'name': 'dates',
+                'class': 'DateField',
+                'kwargs': {
+                    'blank': True
+                }
+            },
+            {
+                'name': 'datetimes',
+                'class': 'DateTimeField',
+                'kwargs': {
+                    'blank': True,
+                    'null': True
+                }
+            },
+            {
+                'name': 'decimal',
+                'class': 'DecimalField',
+                'kwargs': {
+                    'blank': True,
+                    'decimal_places': 2,
+                    'max_digits': 4
+                }
+            },
+            {
+                'name': 'email',
+                'class': 'EmailField',
+                'kwargs': {
+                    'blank': True
+                }
+            },
+            {
+                'name': 'ip',
+                'class': 'GenericIPAddressField',
+                'kwargs': {
+                    'blank': True,
+                    'null': True
+                }
+            },
+            {
+                'name': 'url',
+                'class': models.URLField,
+                'kwargs': {
+                    'blank': True
+                }
+            },
+        ])
+    createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
+    updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)       
+    
+    def __str__(self):
+        return '{0}-{1}'.format(self.category.name,self.name)
+    
+class CharacteristicValue(models.Model):  
+    equipment = models.ForeignKey(Equipment, related_name="eq_characteristic_values")  
+    characteristic = models.ForeignKey(Characteristic, related_name="eq_key_values")  
+    value = models.CharField(max_length=100) 
+    createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
+    updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)   
+    
+    def __str__(self):
+        return '{0}-{1}'.format(self.equipment.name,self.characteristic.name)
