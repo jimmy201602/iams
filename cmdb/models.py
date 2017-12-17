@@ -100,6 +100,7 @@ class InterFace(models.Model):
 
 class Category(models.Model):  
     name = models.CharField(max_length=40) 
+    description = models.TextField(verbose_name="Description",blank=True)
     createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
     updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)   
     
@@ -109,6 +110,7 @@ class Category(models.Model):
 class Equipment(models.Model):  
     name = models.CharField(max_length=100)  
     category = models.ForeignKey(Category, related_name="cg_equip_list")
+    description = models.TextField(verbose_name="Description",blank=True)
     createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
     updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True) 
     
@@ -120,111 +122,42 @@ class Characteristic(models.Model):
     name = models.CharField(max_length=40)
     schema = DictionaryField(schema=[
             {
-                'name': 'number',
-                'class': 'IntegerField',
-                'kwargs': {
-                    'default': 0
-                }
-            },
-            {
-                'name': 'float',
-                'class': models.FloatField,
-                'kwargs': {
-                    'default': 1.0
-                }
-            },
-            {
-                'name': 'boolean',
-                'class': 'BooleanField',
-            },
-            {
-                'name': 'boolean_true',
-                'class': 'BooleanField',
-                'kwargs': {
-                    'verbose_name': 'boolean true',
-                    'default': True
-                }
-            },
-            {
-                'name': 'char',
+                'name': 'Type',
                 'class': 'CharField',
                 'kwargs': {
-                    'default': 'test', 'blank': True, 'max_length': 10
+                    'blank': False,
+                    'max_length': 200,
+                    'choices': (
+                                ('IntegerField', 'Integer'),
+                                ('FloatField', 'Float'),
+                                ('BooleanField', 'Boolean'),
+                                ('TextField', 'Text'),
+                                ('ChoiceField', 'Choice'),
+                                ('DateField', 'Date'),
+                                ('DateTimeField', 'DateTime'),
+                                ('DecimalField', 'Decimal'),
+                                ('EmailField', 'Email'),
+                                ('GenericIPAddressField', 'IP'),
+                                ('URLField', 'Url')
+                                ),
                 }
             },
             {
-                'name': 'text',
+                'name': 'Default Attributes',
                 'class': 'TextField',
                 'kwargs': {
                     'blank': True
                 }
             },
             {
-                'name': 'choice',
-                'class': 'CharField',
+                'name': 'NullAble',
+                'class': 'BooleanField',
                 'kwargs': {
-                    'blank': True,
-                    'max_length': 10,
-                    'choices': (('choice1', 'choice1'), ('choice2', 'choice2')),
-                    'default': 'choice1'
-                }
-            },
-            {
-                'name': 'choice2',
-                'class': 'CharField',
-                'kwargs': {
-                    'blank': True,
-                    'max_length': 10,
-                    'choices': (('choice1', 'choice1'), ('choice2', 'choice2')),
-                }
-            },
-            {
-                'name': 'dates',
-                'class': 'DateField',
-                'kwargs': {
-                    'blank': True
-                }
-            },
-            {
-                'name': 'datetimes',
-                'class': 'DateTimeField',
-                'kwargs': {
-                    'blank': True,
-                    'null': True
-                }
-            },
-            {
-                'name': 'decimal',
-                'class': 'DecimalField',
-                'kwargs': {
-                    'blank': True,
-                    'decimal_places': 2,
-                    'max_digits': 4
-                }
-            },
-            {
-                'name': 'email',
-                'class': 'EmailField',
-                'kwargs': {
-                    'blank': True
-                }
-            },
-            {
-                'name': 'ip',
-                'class': 'GenericIPAddressField',
-                'kwargs': {
-                    'blank': True,
-                    'null': True
-                }
-            },
-            {
-                'name': 'url',
-                'class': models.URLField,
-                'kwargs': {
-                    'blank': True
+                    "default":False,
                 }
             },
         ])
+    description = models.TextField(verbose_name="Description",blank=True)
     createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
     updatetime = models.DateTimeField(verbose_name='Update time',auto_now=True,editable=True)       
     
