@@ -48,7 +48,9 @@ def get_object_form(app_label,model,excludes=()):
             self.helper.form_class = 'form-horizontal'
             self.helper.label_class = 'col-md-2'
             self.helper.field_class = 'col-md-8'
-            self.helper.layout = Layout(*[Div(field.name,css_class='form-group') for field in model_class._meta.fields])
+            self.helper.layout = Layout(*[Div(field.name,css_class='form-group') 
+                                          for field in model_class._meta.fields 
+                                          if not isinstance(model_class._meta.get_field(field.name),(models.DateTimeField,models.AutoField))])
             super(_ObjectForm, self).__init__(*args, **kwargs)        
         
         class Meta:
