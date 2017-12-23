@@ -92,8 +92,8 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
     template_name = 'base_form.html'
     
     def dispatch(self, request, *args, **kwargs):
-        app_label = self.kwargs.pop('app_label')
-        model = self.kwargs.pop('model')
+        app_label = self.kwargs.get('app_label')
+        model = self.kwargs.get('model')
         #Handle 404 error!
         try:
             ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -107,7 +107,7 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
             raise Http404('Objects not found!')        
         self.queryset = self.model.objects.filter(pk=self.kwargs.get('pk',None))
         
-        self.success_url = '/adminlte/form/permission/role/add/'
+        self.success_url = reverse_lazy('dynamic-form-create',args=(app_label,model))
         
         return super(DynamicFormUpdate, self).dispatch(request, *args, **kwargs)
     
