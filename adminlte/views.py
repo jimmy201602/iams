@@ -17,7 +17,8 @@ from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.contrib import admin
 from django.db import models
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout,Div
+from crispy_forms.layout import Layout,Div,Field
+from crispy_forms.bootstrap import AppendedText,PrependedText
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
