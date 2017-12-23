@@ -108,7 +108,7 @@ class Category(models.Model):
         return self.name
     
 class Equipment(models.Model):  
-    name = models.CharField(max_length=100)  
+    name = models.CharField(max_length=100,verbose_name="Name")  
     category = models.ForeignKey(Category, related_name="cg_equip_list")
     description = models.TextField(verbose_name="Description",blank=True)
     createtime = models.DateTimeField(verbose_name='Create time',auto_now_add=True,editable=False)
