@@ -11,6 +11,8 @@
 <!--form media-->
 {{ form.media }}
 {% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block head_ext %}{{extra_content}}{% endblock %}
 {% block content %}
 <section class="content">
     <form id="id-m-form" action="" method="post" class="form {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">

@@ -59,8 +59,9 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
     template_name = 'base_form.html'
         
     def dispatch(self, request, *args, **kwargs):
-        app_label = self.kwargs.pop('app_label')
-        model = self.kwargs.pop('model')
+        app_label = self.kwargs.get('app_label')
+        model = self.kwargs.get('model')
+        
         #Handle 404 error!
         try:
             self.form_class = get_object_form(app_label,model,excludes=())
@@ -81,7 +82,11 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
                 form.fields[field.name].widget = RelatedFieldWidgetWrapper(form.fields[field.name].widget, rel,
                                                                           admin.site, can_add_related=True, can_change_related=True)
         return form    
-
+    
+    def get_context_data(self, **kwargs):
+        context = super(DynamicFormCreate, self).get_context_data(**kwargs)
+        context['title'] = 'Add {0} {1}'.format(self.kwargs.pop('app_label'),self.kwargs.pop('model'))
+        return context
 
 class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
     template_name = 'base_form.html'
@@ -105,6 +110,22 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
         self.success_url = '/adminlte/form/permission/role/add/'
         
         return super(DynamicFormUpdate, self).dispatch(request, *args, **kwargs)
+    
+    def get_form(self, form_class=None):
+        form = super(DynamicFormUpdate, self).get_form(form_class)
+        rel_model = form.Meta.model
+        #Automaticlly handle ForeignKey
+        for field in rel_model._meta.fields:
+            if isinstance(rel_model._meta.get_field(field.name), models.ForeignKey):
+                rel = rel_model._meta.get_field(field.name).rel
+                form.fields[field.name].widget = RelatedFieldWidgetWrapper(form.fields[field.name].widget, rel,
+                                                                          admin.site, can_add_related=True, can_change_related=True)
+        return form    
+    
+    def get_context_data(self, **kwargs):
+        context = super(DynamicFormUpdate, self).get_context_data(**kwargs)
+        context['title'] = 'Change {0} {1}'.format(self.kwargs.pop('app_label'),self.kwargs.pop('model'))
+        return context    
 
 class DynamicFormList(LoginRequiredMixin,ListView):
     template_name = 'base_table.html'
