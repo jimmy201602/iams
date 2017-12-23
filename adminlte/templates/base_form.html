@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'select2/dist/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'select2-bootstrap-theme/dist/select2-bootstrap.min.css' %}">
+{% endblock %}
 {% block js %}
 <!--related objects action-->
 <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
@@ -12,10 +16,16 @@
 <script type="text/javascript" src="{% static 'admin/js/prepopulate_init.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/prepopulate.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/vendor/xregexp/xregexp.js' %}"></script>
+<script type="text/javascript" src="{% static 'select2/dist/js/select2.full.min.js' %}"></script>
 <!--form media-->
 {{ form.media }}
 {% url 'admin:jsi18n' as jsi18nurl %}
 <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+<script type="text/javascript">
+    $('select').select2({
+        theme: "bootstrap"
+    });
+</script>
 {% endblock %}
 {% block title %}{{title|capfirst}}{% endblock %}
 {% block head_ext %}

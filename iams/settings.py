@@ -174,6 +174,7 @@ BOWER_INSTALLED_APPS = (
     'select2-bootstrap-theme',
     'layer',
     'dragula.js',
+    'select2-bootstrap-theme',
 )
 
 #guardian settings

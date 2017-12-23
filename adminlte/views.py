@@ -50,8 +50,8 @@ def get_object_form(app_label,model,excludes=()):
             self.helper.label_class = 'col-md-2'
             self.helper.field_class = 'col-md-8'
             self.helper.layout = Layout(*[Div(field.name,css_class='form-group') 
-                                          for field in model_class._meta.fields 
-                                          if not isinstance(model_class._meta.get_field(field.name),(models.DateTimeField,models.AutoField))])
+                                          for field in model_class._meta.get_fields() 
+                                          if not isinstance(field,(models.DateTimeField,models.AutoField,models.ManyToOneRel))])
             super(_ObjectForm, self).__init__(*args, **kwargs)        
         
         class Meta:
@@ -60,7 +60,7 @@ def get_object_form(app_label,model,excludes=()):
             widgets = {
                 #'app': forms.Select(choices=[(data['app_label'],data['app_label']) for data in ContentType.objects.values('app_label').distinct()]),
                 #'model':forms.Select(choices=[(data.model,data.model) for data in ContentType.objects.all()]),
-                }            
+                }
             
     return _ObjectForm
 
@@ -91,9 +91,9 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
         form = super(DynamicFormCreate, self).get_form(form_class)
         rel_model = form.Meta.model
         #Automaticlly handle ForeignKey
-        for field in rel_model._meta.fields:
+        for field in rel_model._meta.get_fields():
             if isinstance(rel_model._meta.get_field(field.name), models.ForeignKey):
-                rel = rel_model._meta.get_field(field.name).rel
+                rel = field.rel
                 form.fields[field.name].widget = RelatedFieldWidgetWrapper(form.fields[field.name].widget, rel,
                                                                           admin.site, can_add_related=True, can_change_related=True)
         return form    
@@ -135,9 +135,9 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
         form = super(DynamicFormUpdate, self).get_form(form_class)
         rel_model = form.Meta.model
         #Automaticlly handle ForeignKey
-        for field in rel_model._meta.fields:
+        for field in rel_model._meta.get_fields():
             if isinstance(rel_model._meta.get_field(field.name), models.ForeignKey):
-                rel = rel_model._meta.get_field(field.name).rel
+                rel = field.rel
                 form.fields[field.name].widget = RelatedFieldWidgetWrapper(form.fields[field.name].widget, rel,
                                                                           admin.site, can_add_related=True, can_change_related=True)
         return form    
