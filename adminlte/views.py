@@ -13,11 +13,13 @@ from django import forms
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
+from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
+from django.contrib import admin
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
     model_class = ctype.model_class()
-    
+  
     class _ObjectForm( forms.ModelForm ):
         
         #def __init__(self, *args, **kwargs):
@@ -41,6 +43,10 @@ def get_object_form(app_label,model,excludes=()):
         class Meta:
             model = model_class
             exclude = excludes
+            widgets = {
+                #'app': forms.Select(choices=[(data['app_label'],data['app_label']) for data in ContentType.objects.values('app_label').distinct()]),
+                #'model':forms.Select(choices=[(data.model,data.model) for data in ContentType.objects.all()]),
+                }            
             
     return _ObjectForm
 
@@ -63,6 +69,14 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
         self.success_url = reverse_lazy('dynamic-form-create',args=(app_label,model))
         
         return super(DynamicFormCreate, self).dispatch(request, *args, **kwargs)
+    
+    def get_form(self, form_class=None):
+        form = super(DynamicFormCreate, self).get_form(form_class)
+        rel_model = form.Meta.model
+        rel = rel_model._meta.get_field('name').rel
+        form.fields['name'].widget = RelatedFieldWidgetWrapper(form.fields['name'].widget, rel,
+                                                                  admin.site, can_add_related=True, can_change_related=True)
+        return form    
 
 
 class DynamicFormUpdate(LoginRequiredMixin,UpdateView):

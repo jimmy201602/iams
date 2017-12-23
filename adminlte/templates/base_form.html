@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block js %}
+<!--related objects action-->
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/actions.js' %}"></script> 
+<!--form media-->
+{{ form.media }}
+{% endblock %}
 {% block content %}
 <section class="content">
     <form id="id-m-form" action="" method="post" class="form {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">
@@ -10,7 +21,6 @@
             <div class="box-header">
             </div>
             <div class="box-body">
-                {{ form.media }}
                 {% if form.helper %}
                     {% crispy form form.helper %}
                 {% else %}
