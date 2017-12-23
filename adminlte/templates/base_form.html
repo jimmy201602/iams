@@ -9,11 +9,13 @@
 <script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/actions.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/urlify.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/prepopulate_init.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/prepopulate.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/vendor/xregexp/xregexp.js' %}"></script>
- 
 <!--form media-->
 {{ form.media }}
+{% url 'admin:jsi18n' as jsi18nurl %}
+<script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 {% endblock %}
 {% block title %}{{title}}{% endblock %}
 {% block head_ext %}{{extra_content}}{% endblock %}
