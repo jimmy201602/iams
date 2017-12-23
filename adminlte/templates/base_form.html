@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <section class="content">
-    <form id="id-m-form" action="" method="post" class="form-horizontal {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">
+    <form id="id-m-form" action="" method="post" class="form {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">
         {% block right_side_content %}
         {% block right_side_content_top %}
         {% endblock %}
@@ -10,7 +10,12 @@
             <div class="box-header">
             </div>
             <div class="box-body">
-                {% crispy form %}
+                {{ form.media }}
+                {% if form.helper %}
+                    {% crispy form form.helper %}
+                {% else %}
+                    {% crispy form %}
+                {% endif %}
                 <div class="form-group">
                     <div class="col-xs-offset-2 col-xs-10">
                         {% block form_bottom_ext %}
