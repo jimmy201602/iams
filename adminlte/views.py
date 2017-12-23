@@ -16,15 +16,17 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.contrib import admin
 from django.db import models
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout,Div
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
     model_class = ctype.model_class()
   
-    class _ObjectForm( forms.ModelForm ):
+    class _ObjectForm(forms.ModelForm):
         
         #def __init__(self, *args, **kwargs):
-            ## Get 'initial' argument if any
+            #Get 'initial' argument if any
             #initial_arguments = kwargs.get('initial', None)
             #updated_initial = {}
             #if initial_arguments:
@@ -38,8 +40,16 @@ def get_object_form(app_label,model,excludes=()):
             ## or perform complex DB logic here to then perform initialization
             #updated_initial['comment'] = 'Please provide a comment'
             ## Finally update the kwargs initial reference
-            #kwargs.update(initial=updated_initial)
-            #super(ContactForm, self).__init__(*args, **kwargs)
+            #kwargs.update(initial=updated_initial)      
+            #super(_ObjectForm, self).__init__(*args, **kwargs)
+    
+        def __init__(self, *args, **kwargs):
+            self.helper = FormHelper()
+            self.helper.form_class = 'form-horizontal'
+            self.helper.label_class = 'col-md-2'
+            self.helper.field_class = 'col-md-8'
+            self.helper.layout = Layout(*[Div(field.name,css_class='form-group') for field in model_class._meta.fields])
+            super(_ObjectForm, self).__init__(*args, **kwargs)        
         
         class Meta:
             model = model_class
@@ -59,8 +69,10 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
     template_name = 'base_form.html'
         
     def dispatch(self, request, *args, **kwargs):
-        app_label = self.kwargs.get('app_label')
-        model = self.kwargs.get('model')
+        app_label = self.kwargs.pop('app_label')
+        model = self.kwargs.pop('model')
+        self.app_label = app_label
+        self.model_name = model
         
         #Handle 404 error!
         try:
@@ -85,15 +97,20 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
     
     def get_context_data(self, **kwargs):
         context = super(DynamicFormCreate, self).get_context_data(**kwargs)
-        context['title'] = 'Add {0} {1}'.format(self.kwargs.pop('app_label'),self.kwargs.pop('model'))
+        context['title'] = 'Add {0} {1}'.format(self.app_label,self.model_name)
+        context['app_label'] = self.app_label
+        context['model'] = self.model_name
         return context
 
 class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
     template_name = 'base_form.html'
     
     def dispatch(self, request, *args, **kwargs):
-        app_label = self.kwargs.get('app_label')
-        model = self.kwargs.get('model')
+        app_label = self.kwargs.pop('app_label')
+        model = self.kwargs.pop('model')
+        self.app_label = app_label
+        self.model_name = model
+        
         #Handle 404 error!
         try:
             ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -124,7 +141,9 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super(DynamicFormUpdate, self).get_context_data(**kwargs)
-        context['title'] = 'Change {0} {1}'.format(self.kwargs.pop('app_label'),self.kwargs.pop('model'))
+        context['title'] = 'Change {0} {1}'.format(self.app_label,self.model_name)
+        context['app_label'] = self.app_label
+        context['model'] = self.model_name        
         return context    
 
 class DynamicModelList(LoginRequiredMixin,ListView):

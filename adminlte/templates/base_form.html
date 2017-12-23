@@ -18,10 +18,22 @@
 <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 {% endblock %}
 {% block title %}{{title}}{% endblock %}
-{% block head_ext %}{{extra_content}}{% endblock %}
+{% block head_ext %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{app_label}}
+        <small>{{title}}</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dynamic-list' app_label model %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">{{model}}</li>
+      </ol>
+    </section>
+{{extra_content}}{% endblock %}
 {% block content %}
 <section class="content">
-    <form id="id-m-form" action="" method="post" class="form {% block form_css_class %}{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">
+    <form id="id-m-form" action="" method="post" class="form {% block form_css_class %}form-horizontal{% endblock %}" {% block form_ext_attr %}{% endblock %} role="form">
         {% block right_side_content %}
         {% block right_side_content_top %}
         {% endblock %}
