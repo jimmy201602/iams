@@ -127,12 +127,24 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
         context['title'] = 'Change {0} {1}'.format(self.kwargs.pop('app_label'),self.kwargs.pop('model'))
         return context    
 
-class DynamicFormList(LoginRequiredMixin,ListView):
+class DynamicModelList(LoginRequiredMixin,ListView):
     template_name = 'base_table.html'
     
     def dispatch(self, request, *args, **kwargs):
         self.form_class = self.kwargs.pop('model')
-        return super(DynamicFormList, self).dispatch(request, *args, **kwargs)
+        return super(DynamicModelList, self).dispatch(request, *args, **kwargs)
+    
+    def dispatch(self, request, *args, **kwargs):
+        app_label = self.kwargs.get('app_label')
+        model = self.kwargs.get('model')
+        #Handle 404 error!
+        try:
+            ctype = ContentType.objects.get(app_label=app_label,model=model) 
+            self.model = ctype.model_class()
+        except ObjectDoesNotExist:
+            raise Http404('Objects not found!')
+        
+        return super(DynamicModelList, self).dispatch(request, *args, **kwargs)
     
     def get_queryset(self):
         return self.model.objects.all()

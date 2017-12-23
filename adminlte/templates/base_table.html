@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block js %}
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.9/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="{%static 'js/datatableview.js' %}"></script>
+{% endblock %}
 {% block content %}
 <section class="content">
     <div class="row">
@@ -28,7 +33,10 @@
                     </div>
                 </div>
                 <div class="box-body ">
-                    <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="sample_3" cellspacing="0" width="100%">
+                        {% if datatable %}
+                        {{ datatable }}
+                        {% else %}
+                        <table class="table table-striped table-bordered table-hover dt-responsive" width="100%" id="sample_3" cellspacing="0" width="100%">
                         <thead>
                         <tr>
                             <th class="all">First name</th>
@@ -73,7 +81,8 @@
                             <td>1562</td>
                         </tr>
                         </tbody>
-                    </table>
+                        </table>
+                        {% endif %}
                 </div>
             </div>
             <!-- END EXAMPLE TABLE PORTLET-->
