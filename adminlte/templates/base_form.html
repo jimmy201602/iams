@@ -17,13 +17,13 @@
 {% url 'admin:jsi18n' as jsi18nurl %}
 <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
 {% endblock %}
-{% block title %}{{title}}{% endblock %}
+{% block title %}{{title|capfirst}}{% endblock %}
 {% block head_ext %}
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
         {{app_label}}
-        <small>{{title}}</small>
+        <small>{{title|capfirst}}</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="{% url 'dynamic-list' app_label model %}"><i class="fa fa-dashboard"></i> Home</a></li>
