@@ -15,6 +15,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.contrib import admin
+from django.db import models
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -73,9 +74,12 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
     def get_form(self, form_class=None):
         form = super(DynamicFormCreate, self).get_form(form_class)
         rel_model = form.Meta.model
-        rel = rel_model._meta.get_field('name').rel
-        form.fields['name'].widget = RelatedFieldWidgetWrapper(form.fields['name'].widget, rel,
-                                                                  admin.site, can_add_related=True, can_change_related=True)
+        #Automaticlly handle ForeignKey
+        for field in rel_model._meta.fields:
+            if isinstance(rel_model._meta.get_field(field.name), models.ForeignKey):
+                rel = rel_model._meta.get_field(field.name).rel
+                form.fields[field.name].widget = RelatedFieldWidgetWrapper(form.fields[field.name].widget, rel,
+                                                                          admin.site, can_add_related=True, can_change_related=True)
         return form    
 
 
