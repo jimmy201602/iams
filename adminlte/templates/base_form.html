@@ -21,11 +21,11 @@
 {{ form.media }}
 {% url 'admin:jsi18n' as jsi18nurl %}
 <script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
-<!--<script type="text/javascript">-->
-    <!--$('select').select2({-->
-        <!--theme: "bootstrap"-->
-    <!--});-->
-<!--</script>-->
+<script type="text/javascript">
+    $('select').select2({
+        theme: "bootstrap"
+    });
+</script>
 {% endblock %}
 {% block title %}{{title|capfirst}}{% endblock %}
 {% block head_ext %}
