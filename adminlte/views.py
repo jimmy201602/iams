@@ -105,7 +105,7 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
         context['title'] = 'Add {0} {1}'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
-        context['menus'] = ContentType.objects.filter(app_label__in=['cmdb','permission'])
+        context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
         return context
 
 class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
