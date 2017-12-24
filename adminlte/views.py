@@ -19,6 +19,7 @@ from django.db import models
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Div,Field
 from crispy_forms.bootstrap import AppendedText,PrependedText
+from django_hstore.models import DictionaryField
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -49,9 +50,10 @@ def get_object_form(app_label,model,excludes=()):
             self.helper.form_class = 'form-horizontal'
             self.helper.label_class = 'col-md-2'
             self.helper.field_class = 'col-md-8'
+            #DictionaryField bug
             self.helper.layout = Layout(*[Div(field.name,css_class='form-group') 
                                           for field in model_class._meta.get_fields() 
-                                          if not isinstance(field,(models.DateTimeField,models.AutoField,models.ManyToOneRel))])
+                                          if not isinstance(field,(models.DateTimeField,models.AutoField,models.ManyToOneRel,DictionaryField))])
             super(_ObjectForm, self).__init__(*args, **kwargs)        
         
         class Meta:
@@ -103,6 +105,7 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
         context['title'] = 'Add {0} {1}'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
+        context['menus'] = ContentType.objects.filter(app_label__in=['cmdb','permission'])
         return context
 
 class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
