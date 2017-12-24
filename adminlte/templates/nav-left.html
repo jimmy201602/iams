@@ -29,7 +29,7 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
             {% for app,models in menus.items%}
-            <li class="active treeview">
+            <li class="{% ifequal app_label app %}active {% endifequal%} treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>{{app}}</span>
                     <span class="pull-right-container">
@@ -38,7 +38,7 @@
                 </a>
                 <ul class="treeview-menu">
                     {% for model in models %}
-                    <li class="active"><a href="{% url 'dynamic-form-create' app model.model %}"><i class="fa fa-circle-o"></i> Add {{ app|capfirst }} {{ model.model }}</a></li>
+                    <li class="active"><a href="{% url 'dynamic-form-create' app model.model %}"><i class="fa fa-circle-o"></i> Add {{ app|capfirst }} {{ model.model|capfirst }}</a></li>
                     {% endfor %}
                 </ul>
             </li>
