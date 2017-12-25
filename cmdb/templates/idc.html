@@ -1,0 +1,113 @@
+{% extends 'cmdb/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+<br>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <form action="{% url 'idc_del' %}" method="post">
+                    {% csrf_token %}
+            <div class="box">
+                <!-- /.box-header -->
+                <div class="box-body">
+                  <table class="table table-hover table-bordered" id="dataform">
+                      <thead>
+                            <tr>
+                                <th><input type="checkbox" id="choose_all"/></th>
+                                <th>序号</th>
+                                <th>机房名称</th>
+                                <th>机房地址</th>
+                                <th>机房电话</th>
+                                <th>客户经理</th>
+                                <th>移动电话</th>
+                                <th>机柜信息</th>
+                                <th>IP范围</th>
+                                <th>接入带宽</th>
+                            </tr>
+                      </thead>
+                        <tbody>
+                            {% for idc in idc_info %}
+                                <tr class="even gradeA">
+                                    <td><input type="checkbox"  class="item1"  value="{{ idc.id }}" name="id" /></td>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href="{% url 'idc_edit' idc.id %}" > {{ idc.name }}</a></td>
+                                    <td>{{ idc.address }}</td>
+                                    <td>{{ idc.tel }}</td>
+                                    <td>{{ idc.contact }}</td>
+                                    <td>{{ idc.phone }}</td>
+                                    <td>{{ idc.cabinet }}</td>
+                                    <td>{{ idc.ip_range }}</td>
+                                    <td>{{ idc.bandwidth }}</td>
+                                </tr>
+                            {% endfor %}
+
+                        </tbody>
+                  </table>
+                    <button class="btn btn-success" ><a href="{% url 'idc_add' %}">添加</a></button>
+                    <button class="btn btn-danger" type="button" id="delete">删除</button>
+                </div>
+            </div>
+        </form>
+
+    </section>
+        <!-- /.content -->
+</div>
+
+{% endblock %}
+{% block basic_script %}
+<script>
+ $("#delete").on("click",function () {
+        var array = new Array();
+        $("input.item1:checked").each(function() {
+            //alert($(this).val());
+            array.push($(this).val());
+        });
+        if(array.length>0) {
+            if (confirm("确定是否删除?")) {
+                $.ajax({
+                    url: "{% url 'idc_del' %}",
+                    data: {id: JSON.stringify(array)},
+                    type: 'POST',
+                    dataType: 'JSON',
+                    traditional: true,
+                    success: function (data) {
+                        if (data.status) {
+                            location.href = "{% url 'idc' %}";
+                        } else {
+                            alert(data.error);
+                        }
+                    },
+                    error: function () {
+                        location.href = "/noperm"
+                    }
+                });
+            }
+        }
+            else {
+                alert("请至少选择一个");
+            }
+
+    });
+
+
+    $("#choose_all").click(function(){
+            if($(this).is(':checked')){
+                $("input[type='checkbox']").each(function(){
+                    $(this).prop("checked",true);
+                });
+        }else{
+            $("input[type='checkbox']").each(function(){
+                    $(this).removeAttr("checked",false);
+                });
+        }
+
+    });
+
+</script>
+{% endblock  %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block css_file %}
+    {% load staticfiles %}
+    <link href="{% static 'css/bootstrap-multiselect.css' %}" rel="stylesheet">
+    <!--
+    <link rel="stylesheet" href="{% static 'js/xterm/xterm.css' %}"/>
+    <link rel="stylesheet" href="{% static 'js/xterm/addons/fullscreen/fullscreen.css' %}"/>
+    -->
+{% endblock %}
+
+{% block menu %}
+	
+	<div class="text-center h3" ><a href="{% url 'change_password' %}" id="user"> <span class="glyphicon  glyphicon-user"></span>{{ request.user }}</a></div>
+
+		<ul class="nav menu">
+
+			<li ><a href="/cmdb/asset/"><span class="glyphicon glyphicon-dashboard"></span>主机列表</a></li>
+			<li ><a href="/cmdb/group/"><span class="glyphicon glyphicon-download"></span>主机组</a></li>
+			<li ><a href="{% url 'idc' %}"><span class="glyphicon glyphicon-backward"></span>idc管理</a></li>
+			<li role="presentation" class="divider"></li>
+			<li ><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-user" ></span>重新登录</a></li>
+
+		</ul>
+        <div class="attribution">
+        Powered by@<a href="http://getbootstrap.com" target="_blank"  >Bootstrap </a><a href="https://www.djangoproject.com/" target="_blank"  >Django</a><br>
+         Tech Appli:<a href="mailto:admin@outlook.com">admin</a>
+        </div>
+{% endblock %}
+
+
+
+
+
+{% block js_script %}
+		<script src="{% static 'js/jquery.csrf.js' %}"></script>
+        <script src="{% static 'js/bootstrap-multiselect.js' %}"></script>
+
+		<script type="text/javascript">
+		$(function () {
+			$("ul.menu li ").find("a").each(function () {
+				if (window.location.pathname == $(this).attr('href')){
+					$($(this).parent().toggleClass('active'));
+				}
+			});
+			});
+	</script>
+		{% block basic_script %}
+
+		{% endblock %}
+
+{% endblock %}
+

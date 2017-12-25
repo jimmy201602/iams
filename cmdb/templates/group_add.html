@@ -1,0 +1,54 @@
+{% extends 'cmdb/base.html' %}
+{% load staticfiles %}
+
+
+
+
+
+{% block content %}
+
+<br>
+  <div class="content-wrapper">
+
+
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="box">
+        <div class="box-header with-border">
+        </div>
+        <div class="box-body">
+      <form action="{% url 'group_add' %}" method="post">
+        {% csrf_token %}
+
+            {% for field in form %}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger" >{{ field.label }}: {{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+                {% for item in form %}
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">{{ item.label }}:</label>
+                        <div >{{ item }}</div>
+                    </div>
+              {% endfor %}
+
+              <button type="submit" class="btn btn-primary col-lg-offset-1"> 提交</button>
+              <button class="btn btn-danger" ><a  href="{% url 'idc' %}">返回</a></button>
+
+
+
+
+          </form>
+        </div>
+        <!-- /.box-body -->
+        <!-- /.box-footer-->
+      </div>
+      <!-- /.box -->
+    </section>
+
+  </div>
+{% endblock %}

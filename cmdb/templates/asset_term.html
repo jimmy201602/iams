@@ -17,9 +17,6 @@
 
     <!-- Main content -->
     <section class="content">
-    <!--
-        <form action="" method="post" id="asset_form">
-        -->
         {% csrf_token %}
             <div class="box">
                 <div class="box-header">
@@ -67,7 +64,7 @@
                                         <td>{{ host.cpu_num }}</td>
                                         <td>{{ host.memory }}</td>
                                         <td>{{ host.idc }}</td>
-                                        <td ><button class="btn  btn-info webssh"   value="webssh">WebSSH</button></td>
+                                        <td ><button class="btn btn-sm btn-info webssh"   value="webssh">WebSSH</button></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -101,18 +98,75 @@
                 </div>
     </section>
 
+    <div id="myTab">
+
+    </div>
 </div>
 {% endblock %}
-
 {% block basic_script %}
-
 <script src="{% static 'js/lodash.min.js' %}" type="text/javascript" charset="utf-8"></script>
-<script type="text/JavaScript">
-   $.ajaxSetup({head: {csrfmiddlewaretoken: '{{ csrf_token }}' }});
-</script>
+<!--
+<script src="{% static 'js/xterm/xterm.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/xterm/addons/attach/attach.js' %}"></script>
+<script src="{% static 'js/xterm/addons/fit/fit.js' %}"></script>
+<script src="{% static 'js/xterm/addons/fullscreen/fullscreen.js' %}"></script>
+<script src="{% static 'js/xterm/addons/search/search.js' %}"></script>
+<script src="{% static 'js/xterm/addons/terminado/terminado.js' %}"></script>
+-->
+<script src="{% static 'js/term.js' %}" ></script>
+<script src="{% static 'js/ws.js' %}" ></script>
 
 
 <script>
+function openTerminal(options) {
+    var client = new WSSHClient();
+    var term = new Terminal({cols: 80, rows: 24, screenKeys: true, useStyle: true});
+    term.on('data', function (options) {
+        client.sendClientData(options);
+    });
+    term.open();
+    $('.terminal').detach().appendTo('#myTab');
+    $("#term").show();
+    term.write('Connecting...');
+    client.connect({
+        onError: function (error) {
+            term.write('Error: ' + error + '\r\n');
+            console.debug('error happened');
+        },
+        onConnect: function () {
+            //alert(options)
+            client.sendInitData(options);
+            //client.sendClientData('\r');
+            console.debug('connection established');
+        },
+        onClose: function () {
+            term.write("\rconnection closed")
+            console.debug('connection reset by peer');
+            $('term').hide()
+        },
+        onData: function (options) {
+            term.write(options);
+            console.debug('get data:' + options);
+        }
+    })
+}
+
+var charWidth = 6.2;
+var charHeight = 15.2;
+
+
+function getTerminalSize() {
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    return {
+        w: Math.floor(width / charWidth),
+        h: Math.floor(height / charHeight)
+    };
+}
+
+
+
+
 
    $("button.webssh").on("click",function () {
             var _this = $(this);
@@ -120,75 +174,13 @@
             var port = _this.parent().siblings(".port").text();
             var user= $("#user").text()
             var param={ip:ip ,port:port,user:user}
-            var ipport=ip+":"+port
-            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-            var ws_path = ws_scheme + '://' + window.location.host + '/ws/';
-            //alert($(_this).text())
-            //var protocol = window.location.protocol == "https:" ? "https://" : "http://";
-            //var addr = protocol + location.hostname + ((location.port) ? (":" + location.port) : "")
-     $.ajax({
-                    url: "http://192.168.1.154:9000/console/chksshdaddr?rnd=" + Math.random(),
-                    method: "POST",
-                    data: {
-                        "vm_addr": ipport,
-                    },
-                    dataType: "jsonp",
-                    cache: false,
-                }).done(function(data) {
-                    var json = data;
-                    if (typeof(data) != "object") {
-                        json = $.parseJSON(data);
-                    }
-                    if (json.ok) {
-                        console.log("en_addr:", json.data.sshd_addr);
-                          $.ajax({
-                                url: "{% url 'asset_webssh' %}",
-                                data: param,
-                                type: 'POST',
-                                dataType: 'JSON',
-                                success: function (ret) {
-                                    //var obj = JSON.parse(ret);
-                                    var username = ret.username;
-                                    var password = ret.password;
-                                    //alert(username,password)
-                                    login(json.data.sshd_addr, username, password);
-                                },
-                              error:function (ret) {
-                                  alert(ret.error)
-                              }
-                          })
-                    } else {
-                        alert("登陆失败，请确认您的主机信息。");
-                    }
-                }).fail(function() {
-                    alert("未知失败，请联系管理员。");
-                });
 
-            var login = function(enVMAddr, username, password) {
-                $.ajax({
-                    url: "http://192.168.1.154:9000/console/login?rnd=" + Math.random(),
-                    method: "POST",
-                    data: {
-                        "vm_addr": enVMAddr,
-                        "user_name": username,
-                        "user_pwd": password
-                    },
-                    dataType: "jsonp",
-                    cache: false,
-                }).done(function(data) {
-                    var json = data;
-                    if (typeof(data) != "object") {
-                        json = $.parseJSON(data);
-                    }
-                    if (json.ok) {
-                        window.open("http://192.168.1.154:9000" + json.data);
-                    } else {
-                        alert("登陆失败，请确认您的登陆信息。");
-                    }
-                }).fail(function() {
-                    alert("未知失败，请联系管理员。");
-                });
-             };
+
+//            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+  //          var ws_path = ws_scheme + '://' + window.location.host + '/ws/';
+            //alert($(_this).text())
+            openTerminal(param)
+
 });
 
 
