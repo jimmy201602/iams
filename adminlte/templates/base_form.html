@@ -25,17 +25,9 @@
     $('select').select2({
         theme: "bootstrap"
     });
-//$('#id_category').on('select2:select', function (e) {
-//    var data = e.params.data;
-//    console.log(data.id);
-//});
 $('body').on('click', '.related-widget-wrapper-link', function(e) {
     e.preventDefault();
     var id = this.id.replace('change_','');
-    //console.log($(this).attr('data-href-template').replace('__fk__', $("#"+id+" :selected").val()));
-    //var event = $.Event('django:show-related', {href: $(this).attr('data-href-template').replace('__fk__', $("#id_category :selected").val())});
-    //showRelatedObjectPopup($(this).attr('data-href-template').replace('__fk__', $("#id_category :selected").val()));
-    //showAdminPopup($(this).attr('data-href-template').replace('__fk__', $("#id_category :selected").val()), /^(change|add|delete)_/, false);
     var win = window.open($(this).attr('data-href-template').replace('__fk__', $("#"+id+" :selected").val()), 'id_category', 'height=500,width=800,resizable=yes,scrollbars=yes');
     win.focus();
     return false;
@@ -43,18 +35,16 @@ $('body').on('click', '.related-widget-wrapper-link', function(e) {
 function dismissChangeRelatedObjectPopup(win, objId, newRepr, newId) {
     var id = windowname_to_id(win.name).replace(/^edit_/, '');
     var selectsSelector = interpolate('#%s, #%s_from, #%s_to', [id, id, id]);
-    console.log(id);
-    console.log(newId);
     var selects = $(selectsSelector);
     selects.find('option').each(function() {
         if (this.value === objId) {
             this.textContent = newRepr;
             this.value = newId;
-            //$('#'+id).select2("data", { id: objId, text: newRepr });
-            //$("#"+id).val(newId).trigger('change.select2');
-            var intValueOfFruit = 1;
-            var selectOption = new Option(newRepr, intValueOfFruit, true, true);
-            $("#"+id).append(selectOption).trigger('change');
+            $("#"+id).select2('destroy');
+            $("#"+id).select2({
+                theme: "bootstrap"
+            });
+            $("#"+id).val(newId);
         }
     });
     win.close();
