@@ -10,7 +10,7 @@
 <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/RelatedObjectLookups.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/actions.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/urlify.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/prepopulate_init.js' %}"></script>
@@ -25,7 +25,7 @@
     $('select').select2({
         theme: "bootstrap"
     });
-$('body').on('click', '.related-widget-wrapper-link', function(e) {
+$('body').on('click', '.related-widget-wrapper-link.change-related', function(e) {
     e.preventDefault();
     var id = this.id.replace('change_','');
     var win = window.open($(this).attr('data-href-template').replace('__fk__', $("#"+id+" :selected").val()), 'id_category', 'height=500,width=800,resizable=yes,scrollbars=yes');
