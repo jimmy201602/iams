@@ -79,8 +79,33 @@ window.dismissChangeRelatedObjectPopup = dismissChangeRelatedObjectPopup;
             </div>
             <div class="box-body">
                 {% if form.helper %}
-                    {% crispy form form.helper %}
+                <div class="form-group">
+                    <div id="div_id_group" class="form-group"><label for="id_group" class="control-label col-md-2">
+                        Group
+                    </label>
+                        <div class="controls col-md-8">
+                            <div class="input-group">
+                            <!--<div class="related-widget-wrapper">--><select name="group" class="select form-control"
+                                                                        id="id_group">
+                                <option value="" selected="">---------</option>
+
+                            </select> <a class="related-widget-wrapper-link change-related input-group-addon" id="change_id_group"
+                                         data-href-template="/admin/cmdb/hostgroup/__fk__/change/?_to_field=id&amp;_popup=1"
+                                         title="Change selected host group"><img
+                                    src="/static/admin/img/icon-changelink.svg" alt="Change"> </a>
+                                <a
+                                    class="related-widget-wrapper-link add-related input-group-addon" id="add_id_group"
+                                    href="/admin/cmdb/hostgroup/add/?_to_field=id&amp;_popup=1"
+                                    title="Add another host group"><img src="/static/admin/img/icon-addlink.svg"
+                                                                        alt="Add"> </a><!--input-group-addon</div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% crispy form form.helper %}
                 {% else %}
+
+
                     {% crispy form %}
                 {% endif %}
                 <div class="form-group">
