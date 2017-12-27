@@ -28,9 +28,11 @@
 $('body').on('click', '.related-widget-wrapper-link.change-related', function(e) {
     e.preventDefault();
     var id = this.id.replace('change_','');
-    var win = window.open($(this).attr('data-href-template').replace('__fk__', $("#"+id+" :selected").val()), 'id_category', 'height=500,width=800,resizable=yes,scrollbars=yes');
-    win.focus();
-    return false;
+    if ($("#"+id+" :selected").val() != ""){
+        var win = window.open($(this).attr('data-href-template').replace('__fk__', $("#"+id+" :selected").val()), 'id_category', 'height=500,width=800,resizable=yes,scrollbars=yes');
+        win.focus();
+        return false;
+    }
 });
 function dismissChangeRelatedObjectPopup(win, objId, newRepr, newId) {
     var id = windowname_to_id(win.name).replace(/^edit_/, '');
