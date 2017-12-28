@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block js %}
-<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.9/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="{% static 'datatables/media/js/jquery.dataTables.min.js'%} "></script>
+<script type="text/javascript" charset="utf8" src="{% static 'datatables/media/js/dataTables.bootstrap.min.js'%} "></script>
 <script type="text/javascript" charset="utf8" src="{%static 'js/datatableview.js' %}"></script>
+<script type="application/javascript">
+    $(function(){
+        datatableview.initialize($('.datatable'));
+    });
+</script>
+{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'datatables/media/css/dataTables.bootstrap.min.css' %}">
 {% endblock %}
 {% block content %}
 <section class="content">
@@ -13,7 +21,10 @@
             <div class="box box-success">
                 <div class="box-header with-border">
                     <div class="caption">
-                        <i class="fa fa-globe"></i> <h3 class="box-title">Visitors Report</h3>
+                        <!--<i class="fa fa-globe"></i> <h3 class="box-title">Visitors Report</h3>-->
+                        <a class="btn btn-primary" href="{% url 'dynamic-form-create' app_label model%}"} Add New {{model|capfirst}}
+                            <i class="fa fa-plus"></i>
+                        </a>
                     </div>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>

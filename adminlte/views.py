@@ -20,6 +20,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Div,Field
 from crispy_forms.bootstrap import AppendedText,PrependedText
 from django_hstore.models import DictionaryField
+from datatableview.views import DatatableView
+from datatableview import Datatable
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -151,18 +153,17 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
         context['app_label'] = self.app_label
         context['model'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
-        return context    
+        return context
 
-class DynamicModelList(LoginRequiredMixin,ListView):
+class DynamicModelList(LoginRequiredMixin,DatatableView):
     template_name = 'base_table.html'
     
     def dispatch(self, request, *args, **kwargs):
-        self.form_class = self.kwargs.pop('model')
-        return super(DynamicModelList, self).dispatch(request, *args, **kwargs)
-    
-    def dispatch(self, request, *args, **kwargs):
-        app_label = self.kwargs.get('app_label')
-        model = self.kwargs.get('model')
+        app_label = self.kwargs.pop('app_label')
+        model = self.kwargs.pop('model')
+        self.app_label = app_label
+        self.model_name = model
+        
         #Handle 404 error!
         try:
             ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -170,7 +171,21 @@ class DynamicModelList(LoginRequiredMixin,ListView):
         except ObjectDoesNotExist:
             raise Http404('Objects not found!')
         
+        model = self.model
+        class datatable_class(Datatable):
+            class Meta:
+                model = self.model
+                page_length = 10
+                structure_template = 'datatableview/bootstrap_structure.html'
+                request_method = 'POST'
+                
+        self.datatable_class = datatable_class
         return super(DynamicModelList, self).dispatch(request, *args, **kwargs)
     
-    def get_queryset(self):
-        return self.model.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super(DynamicModelList, self).get_context_data(**kwargs)
+        context['title'] = 'Change {0} {1}'.format(self.app_label,self.model_name)
+        context['app_label'] = self.app_label
+        context['model'] = self.model_name
+        context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
+        return context    

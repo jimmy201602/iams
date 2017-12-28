@@ -137,6 +137,7 @@ class ConfigureDatatableObject(DemoMixin, DatatableView):
             unsortable_columns = ['n_comments']
             hidden_columns = ['n_pingbacks']
             structure_template = 'datatableview/default_structure.html'
+            request_method = 'POST'
 
     implementation = u"""
     class MyDatatable(Datatable):
