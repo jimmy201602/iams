@@ -21,7 +21,7 @@ from crispy_forms.layout import Layout,Div,Field
 from crispy_forms.bootstrap import AppendedText,PrependedText
 from django_hstore.models import DictionaryField
 from datatableview.views import DatatableView
-from datatableview import Datatable
+from datatableview import Datatable, columns
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -164,7 +164,7 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
         self.app_label = app_label
         self.model_name = model
         
-        #Handle 404 error!
+        #Raise 404 error if app_label and model does not exist!
         try:
             ctype = ContentType.objects.get(app_label=app_label,model=model) 
             self.model = ctype.model_class()
@@ -172,10 +172,74 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
             raise Http404('Objects not found!')
         
         model = self.model
+        
+        
         class datatable_class(Datatable):
+            
+            #Handle DateTimeField DateField and IP
+            def format_date_time(instance, **kwargs):
+                return getattr(instance,kwargs['field_name']).strftime('%Y-%m-%d %H:%M:%S')
+            
+            def format_date(instance, **kwargs):
+                return getattr(instance,kwargs['field_name']).strftime('%Y-%m-%d')
+            
+            def format_ip(instance, **kwargs):
+                return getattr(instance,kwargs['field_name'])
+    
+            self.processors = {}
+            self.search_fields = list()
+            self.columns = list()
+
+            for field in model._meta.get_fields():
+                if isinstance(field,models.DateTimeField):
+                    self.processors.update({field.name:format_date_time})
+                    self.search_fields.append(field.name)
+                    self.columns.append(field.name)
+                elif isinstance(field,models.DateField):
+                    self.processors.update({field.name:format_date})
+                    self.search_fields.append(field.name)
+                    self.columns.append(field.name)
+                elif isinstance(field,models.GenericIPAddressField):
+                    self.processors.update({field.name:format_ip})
+                    self.columns.append(field.name)
+                elif isinstance(field,models.CharField):
+                    #Handle choice field
+                    if len(field.choices) == 0:
+                        self.search_fields.append(field.name)
+                        self.columns.append(field.name)
+                elif isinstance(field,(models.ManyToManyRel,models.ManyToManyField)):
+
+                    #Add custom ManyToManyField
+                    def ManyToManyFieldProcessor(instance,**kwargs):
+                        #print dir(kwargs['field_name'])
+                        #print getattr(instance,'permissions').all()
+                        #print ['<a>{0}</a>'.format(str(data)) for data in getattr(instance,'permissions').all()]
+                        print 'kwargs',kwargs['field_name']
+                        #return ''.join(['<a>{0}</a>'.format(str(data)) for data in getattr(instance,kwargs['field_name']).all()])
+                        return 111
+                    
+                    field_name = columns.TextColumn(field.name,processor=ManyToManyFieldProcessor)
+                    #self.processors.update({'field_name':ManyToManyFieldProcessor})
+                    #self.columns.append('field_name')
+                    
+                elif isinstance(field,(models.ManyToOneRel,DictionaryField,models.ManyToManyRel)):
+                    pass
+                elif isinstance(field,models.AutoField):
+                    self.search_fields.append(field.name)
+                    self.columns.append(field.name)
+                elif isinstance(field,models.ForeignKey):
+                    self.search_fields.append(field.name)
+                    self.columns.append(field.name)                    
+                else:
+                    self.search_fields.append(field.name)
+                    self.columns.append(field.name)
+
             class Meta:
                 model = self.model
                 page_length = 10
+                columns = self.columns
+                processors = self.processors
+                search_fields = self.search_fields
                 structure_template = 'datatableview/bootstrap_structure.html'
                 request_method = 'POST'
                 
@@ -188,4 +252,12 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
         context['app_label'] = self.app_label
         context['model'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
-        return context    
+        return context
+    
+    def get_datatable(self):
+        datatable = super(DynamicModelList, self).get_datatable()
+        #datatable['blog'] = columns.TextColumn("Blog Name", sources=['blog__name'])
+        print datatable.__dict__
+        if datatable.columns.has_key('field_name'):
+            del datatable.columns['field_name']
+        return datatable    

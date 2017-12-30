@@ -38,7 +38,7 @@
                 </a>
                 <ul class="treeview-menu">
                     {% for model in models %}
-                    <li class="active"><a href="{% url 'dynamic-list' app model.model %}"><i class="fa fa-circle-o"></i>{{ app|capfirst }} {{ model.model|capfirst }} List</a></li>
+                    <li class="active"><a href="{% url 'dynamic-list' app model.model %}"><i class="fa fa-circle-o"></i>{{ model.model|capfirst }} List</a></li>
                     {% endfor %}
                 </ul>
             </li>
