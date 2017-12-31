@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>运维自动化平台</title>
+{% load staticfiles %}
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}" rel="stylesheet">
+
+
+
+
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+<style type="text/css">
+.navbar-inverse {
+    background-color: #2c4e5f;
+}
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
+    color: #fff;
+    background-color: rgba(29, 52, 64, 0.55);
+}
+</style>
+
+{% block css_file %}
+{% endblock %}
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        {% include "nav.html" %}
+	</nav>
+
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+           {% block menu %}
+            {% endblock %}
+	</div><!--/.sidebar-->
+
+
+    <div  class=" col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2 main " >
+         {% block content %}
+         {% endblock %}
+    </div>
+
+	<!--/.main-->
+
+
+
+    <!--标准组件-->
+	<script src="{% static 'js/jquery-1.11.1.min.js' %}" ></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <!--json_tool-->
+    <script src="{% static 'js/jquery-json.js' %}"></script>
+
+
+    <script type="text/javascript">
+    //导航/菜单效果
+    $(document).ready(function(){
+        var  f_url=window.location.pathname.split('/')[1];
+        var  t_tag=$(".navbar-header .navbar-nav li");
+        
+        t_tag.each(function(){
+            var s_url=$(this).children("a").attr("href").split('/')[1];
+            if(f_url===s_url){
+                $(this).addClass("active");
+            }
+        });
+        
+    })
+       </script>
+    {% block js_script %}
+
+    {% endblock %}
+
+</body>
+
+</html>
