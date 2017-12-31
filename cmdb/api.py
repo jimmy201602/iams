@@ -13,10 +13,10 @@ from .models import Host,HostGroup
 #from .models import Host, HostGroup, ASSET_TYPE, ASSET_STATUS
 
 
-from api.common import token_verify
-from api.deploy_key import deploy_key
+#from api.common import token_verify
+#from api.deploy_key import deploy_key
 from api.log import log
-from config.config_api import Config
+#from config.config_api import Config
 #from config.views import get_dir
 
 
@@ -87,7 +87,7 @@ def page_list_return(total, current=1):
 
 
 @csrf_exempt
-@token_verify()
+#@token_verify()
 def collect(request):
     asset_info = json.loads(request.body)
     if request.method == 'POST':
@@ -108,14 +108,14 @@ def collect(request):
         except Exception as msg:
             print(msg)
             host = Host()
-            level = Config.conf()["log_level"]
-            ssh_pwd = Config.webssh()["ssh_pwd"]
-            log_path = Config.conf()["log_path"]
-            log("cmdb.log", level, log_path)
-            logging.info("==========sshkey deploy start==========")
-            data = deploy_key(ip, ssh_pwd)
-            logging.info(data)
-            logging.info("==========sshkey deploy end==========")
+            # level = Config.conf()["log_level"]
+            # ssh_pwd = Config.webssh()["ssh_pwd"]
+            # log_path = Config.conf()["log_path"]
+            # log("cmdb.log", level, log_path)
+            # logging.info("==========sshkey deploy start==========")
+            # data = deploy_key(ip, ssh_pwd)
+            # logging.info(data)
+            # logging.info("==========sshkey deploy end==========")
 
         # if req.POST.get('identity'):
         #     identity = req.POST.get('identity')
@@ -141,7 +141,7 @@ def collect(request):
         return HttpResponse("No any post data!")
 
 
-@token_verify()
+#@token_verify()
 def get_host(request):
     d = []
     try:
@@ -165,7 +165,7 @@ def get_host(request):
             return HttpResponse(msg, status=404)
 
 
-@token_verify()
+#@token_verify()
 def get_group(request):
     if request.method == 'GET':
         d = []
