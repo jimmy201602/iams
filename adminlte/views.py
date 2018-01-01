@@ -240,7 +240,7 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
     
     def get_context_data(self, **kwargs):
         context = super(DynamicModelList, self).get_context_data(**kwargs)
-        context['title'] = 'Change {0} {1}'.format(self.app_label,self.model_name)
+        context['title'] = '{0} {1} List'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
