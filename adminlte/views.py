@@ -57,7 +57,7 @@ def get_object_form(app_label,model,excludes=()):
             #DictionaryField bug
             self.helper.layout = Layout(*[Div(field.name,css_class='form-group') 
                                           for field in model_class._meta.get_fields() 
-                                          if not isinstance(field,(models.DateTimeField,models.AutoField,models.ManyToOneRel,DictionaryField,models.ManyToManyRel))])
+                                          if not isinstance(field,(models.AutoField,models.ManyToOneRel,DictionaryField,models.ManyToManyRel))])
             super(_ObjectForm, self).__init__(*args, **kwargs)        
         
         class Meta:
