@@ -27,7 +27,7 @@
                 <div class="box-header with-border">
                     <div class="caption">
                         <!--<i class="fa fa-globe"></i> <h3 class="box-title">Visitors Report</h3>-->
-                        <a role="button" class="btn btn-primary" href="{% url 'dynamic-form-create' app_label model%}"} title="Add New {{model|capfirst}}"> Add New {{model|capfirst}}
+                        <a role="button" class="btn btn-primary" href="{% if app_label and model %}{% url 'dynamic-form-create' app_label model%}{% else %} # {% endif %}"} title="Add New {{model|capfirst}}"> Add New {{model|capfirst}}
                             <i class="fa fa-plus"></i>
                         </a>
                     </div>
