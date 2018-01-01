@@ -259,13 +259,6 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
                     model_field_class = models.ManyToManyField
                     handles_field_classes = [models.ManyToManyField]
                     lookup_types = ()
-                #import imp
-                #module = imp.new_module(field.name)
-                #function=                '''def ManyToManyFieldProcessor(instance,**kwargs):
-                    #return ''.join(['<a>{0}</a>'.format(str(data)) for data in getattr(instance,{0}).all()])'''.format(field.name)
-                #exec function in module.__dict__
-
-                #datatable.columns[field.name] = ManyToMantFieldColumn(field.name, sources=field.name,processor=getattr(module,'ManyToManyFieldProcessor'))
                 
                 def ManyToManyFieldProcessor(instance,**kwargs):
                     return '<br>'.join(['<a>{0}</a>'.format(str(data)) for data in kwargs['rich_value'].all()])
