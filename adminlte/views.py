@@ -26,7 +26,9 @@ from datatableview import Datatable, columns
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
     model_class = ctype.model_class()
-  
+    if not model_class:
+        raise Http404("You should register app in the project settings!")
+    
     class _ObjectForm(forms.ModelForm):
         
         #def __init__(self, *args, **kwargs):
@@ -87,7 +89,7 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
         except ObjectDoesNotExist:
             raise Http404('Objects not found!')
         
-        self.success_url = reverse_lazy('dynamic-form-create',args=(app_label,model))
+        self.success_url = reverse_lazy('dynamic-list',args=(app_label,model))
         
         return super(DynamicFormCreate, self).dispatch(request, *args, **kwargs)
     
@@ -132,7 +134,7 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
             raise Http404('Objects not found!')        
         self.queryset = self.model.objects.filter(pk=self.kwargs.get('pk',None))
         
-        self.success_url = reverse_lazy('dynamic-form-create',args=(app_label,model))
+        self.success_url = reverse_lazy('dynamic-list',args=(app_label,model))
         
         return super(DynamicFormUpdate, self).dispatch(request, *args, **kwargs)
     
@@ -171,8 +173,10 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
         except ObjectDoesNotExist:
             raise Http404('Objects not found!')
         
-        model = self.model
+        if not self.model:
+            raise Http404("You should register app in the project settings!")
         
+        model = self.model
         
         class datatable_class(Datatable):
             
@@ -200,28 +204,16 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
                     self.search_fields.append(field.name)
                     self.columns.append(field.name)
                 elif isinstance(field,models.GenericIPAddressField):
-                    self.processors.update({field.name:format_ip})
-                    self.columns.append(field.name)
+                    #self.processors.update({field.name:format_ip})
+                    #self.columns.append(field.name)
+                    pass
                 elif isinstance(field,models.CharField):
                     #Handle choice field
                     if len(field.choices) == 0:
                         self.search_fields.append(field.name)
                         self.columns.append(field.name)
                 elif isinstance(field,(models.ManyToManyRel,models.ManyToManyField)):
-
-                    #Add custom ManyToManyField
-                    def ManyToManyFieldProcessor(instance,**kwargs):
-                        #print dir(kwargs['field_name'])
-                        #print getattr(instance,'permissions').all()
-                        #print ['<a>{0}</a>'.format(str(data)) for data in getattr(instance,'permissions').all()]
-                        print 'kwargs',kwargs['field_name']
-                        #return ''.join(['<a>{0}</a>'.format(str(data)) for data in getattr(instance,kwargs['field_name']).all()])
-                        return 111
-                    
-                    field_name = columns.TextColumn(field.name,processor=ManyToManyFieldProcessor)
-                    #self.processors.update({'field_name':ManyToManyFieldProcessor})
-                    #self.columns.append('field_name')
-                    
+                    pass
                 elif isinstance(field,(models.ManyToOneRel,DictionaryField,models.ManyToManyRel)):
                     pass
                 elif isinstance(field,models.AutoField):
@@ -256,8 +248,36 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
     
     def get_datatable(self):
         datatable = super(DynamicModelList, self).get_datatable()
-        #datatable['blog'] = columns.TextColumn("Blog Name", sources=['blog__name'])
-        print datatable.__dict__
-        if datatable.columns.has_key('field_name'):
-            del datatable.columns['field_name']
+        for field in self.model._meta.get_fields():
+            if isinstance(field,models.GenericIPAddressField):
+                datatable.columns[field.name] = columns.TextColumn(field.name, source=field.name)
+            elif isinstance(field,models.ManyToManyField):
+                
+                class ManyToMantFieldColumn(columns.Column):
+                    model_field_class = models.ManyToManyField
+                    handles_field_classes = [models.ManyToManyField]
+                    lookup_types = ()
+                #import imp
+                #module = imp.new_module(field.name)
+                #function=                '''def ManyToManyFieldProcessor(instance,**kwargs):
+                    #return ''.join(['<a>{0}</a>'.format(str(data)) for data in getattr(instance,{0}).all()])'''.format(field.name)
+                #exec function in module.__dict__
+
+                #datatable.columns[field.name] = ManyToMantFieldColumn(field.name, sources=field.name,processor=getattr(module,'ManyToManyFieldProcessor'))
+                
+                def ManyToManyFieldProcessor(instance,**kwargs):
+                    return '<br>'.join(['<a>{0}</a>'.format(str(data)) for data in kwargs['rich_value'].all()])
+                
+                datatable.columns[field.name] = ManyToMantFieldColumn(field.name, sources=field.name,processor=ManyToManyFieldProcessor)
+
+        #if datatable.columns.has_key('field_name'):
+            #del datatable.columns['field_name']
+        def ActionProcessor(instance,**kwargs):
+            DetailButton = '<a href="{0}" role="button" class="btn btn-primary">Detail</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
+            DeleteButton = '<a href="{0}" role="button" class="btn btn-danger">Delete</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
+            UpdateButton = '<a href="{0}" role="button" class="btn btn-success">Update</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
+            return  DetailButton + UpdateButton + DeleteButton
+        
+        datatable.columns['Action'] = columns.TextColumn('Action',processor=ActionProcessor)
+        
         return datatable    

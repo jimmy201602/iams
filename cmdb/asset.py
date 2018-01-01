@@ -11,10 +11,10 @@ from django.contrib.auth.decorators import login_required
 
 from cmdb.api import get_object,get_verbose_name,paginate_queryset
 #from config.views import get_dir
-from config.config_api import  Config
+#from config.config_api import  Config
 from .forms import AssetForm,addAssetForm
 from .models import Host, Idc, HostGroup, ASSET_STATUS, ASSET_TYPE
-from accounts.models import  UserInfo
+#from accounts.models import  UserInfo
 
 
 
@@ -22,7 +22,7 @@ from accounts.models import  UserInfo
 @login_required()
 def asset(request):
     #print(request.GET)
-    webssh_domain = Config.webssh()["webssh_domain"]
+    #webssh_domain = Config.webssh()["webssh_domain"]
     asset_data = []
     idc_info = Idc.objects.all()
     host_list = Host.objects.all()
@@ -61,7 +61,7 @@ def asset(request):
 
     page_no = int(request.GET.get("page_no", "1"))
     data, pagination_data = paginate_queryset(asset_data, page_no)
-    return render(request, 'cmdb/asset.html', locals())
+    return render(request, 'asset.html', locals())
 
 
 
@@ -98,10 +98,10 @@ def asset_add(request):
         if form.is_valid():
             form.save()
             return redirect("/cmdb/asset/")
-        return render(request, "cmdb/asset_add.html", locals())
+        return render(request, "asset_add.html", locals())
     else:
         form = addAssetForm()
-        return render(request, "cmdb/asset_add.html", locals())
+        return render(request, "asset_add.html", locals())
 
 
 @login_required()
@@ -112,10 +112,10 @@ def asset_edit(request,id):
         if form.is_valid():
             form.save()
             return  redirect("/cmdb/asset/")
-        return render(request, "cmdb/asset_edit.html", locals())
+        return render(request, "asset_edit.html", locals())
     else:
         form = AssetForm(instance=obj)
-    return render(request,"cmdb/asset_edit.html",locals())
+    return render(request,"asset_edit.html",locals())
 
 
 @login_required()

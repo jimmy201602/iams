@@ -15,7 +15,7 @@ from .models import Host,HostGroup
 
 #from api.common import token_verify
 #from api.deploy_key import deploy_key
-from api.log import log
+#from api.log import log
 #from config.config_api import Config
 #from config.views import get_dir
 

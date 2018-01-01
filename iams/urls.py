@@ -22,5 +22,5 @@ urlpatterns = [
     url(r'^accounts/login/$', LoginView.as_view(template_name='admin/login.html'),name='login'),
     url(r'^accounts/logout/$',LogoutView.as_view(template_name='registration/logged_out.html'),name='logout'),
     url(r'adminlte/', include('adminlte.urls') ),
-    url(r'cmdb/', include('cmdb.urls') ),
+    #url(r'cmdb/', include('cmdb.urls') ),
 ]

@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'datatableview',
     'guardian',
     'cmdb',
-    #'permission',
+    'permission',
     'django_hstore'
 ]
 
@@ -92,8 +92,8 @@ DATABASES = {
     'default': {
             'ENGINE': 'django.db.backends.mysql',
                 'NAME': 'iams',
-                'USER': 'damon',
-                'PASSWORD': '123456',
+                'USER': 'root',
+                'PASSWORD': '',
                 'HOST': 'localhost',
                 'PORT': '3306',
                 #'HAS_HSTORE': True,
