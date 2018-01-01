@@ -19,6 +19,10 @@
 <script type="text/javascript" src="{% static 'admin/js/vendor/xregexp/xregexp.js' %}"></script>
 <script type="text/javascript" src="{% static 'select2/dist/js/select2.full.min.js' %}"></script>
 <script src="{% static 'flatpickr/dist/flatpickr.min.js' %}"></script>
+<!-- InputMask -->
+<script src="{% static 'inputmask/dist/inputmask/inputmask.js' %}"></script>
+<script src="{% static 'inputmask/dist/inputmask/jquery.inputmask.js' %}"></script>
+<script src="{% static 'inputmask/dist/inputmask/inputmask.extensions.js' %}"></script>
 <!--form media-->
 {{ form.media }}
 {% url 'admin:jsi18n' as jsi18nurl %}
@@ -34,6 +38,8 @@
         dateFormat: 'Y-m-d H:i:S',
         enableSeconds:true
     });
+    //ip Plugin
+    $("[data-inputmask]").inputmask();
 $('body').on('click', '.related-widget-wrapper-link.change-related', function(e) {
     e.preventDefault();
     var id = this.id.replace('change_','');

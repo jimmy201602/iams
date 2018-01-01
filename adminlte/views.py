@@ -102,6 +102,8 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
                 rel = field.rel
                 form.fields[field.name].widget = RelatedFieldWidgetWrapper(form.fields[field.name].widget, rel,
                                                                           admin.site, can_add_related=True, can_change_related=True)
+            elif isinstance(rel_model._meta.get_field(field.name), models.GenericIPAddressField):
+                form.fields[field.name].widget = forms.TextInput(attrs={"data-inputmask":"'alias': 'ip'"})
         return form    
     
     def get_context_data(self, **kwargs):

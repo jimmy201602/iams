@@ -176,6 +176,7 @@ BOWER_INSTALLED_APPS = (
     'dragula.js',
     'select2-bootstrap-theme',
     'flatpickr-calendar#2.5.6',
+    'inputmask'
 )
 
 #guardian settings
