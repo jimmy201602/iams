@@ -175,6 +175,7 @@ BOWER_INSTALLED_APPS = (
     'layer',
     'dragula.js',
     'select2-bootstrap-theme',
+    'flatpickr-calendar#2.5.6',
 )
 
 #guardian settings

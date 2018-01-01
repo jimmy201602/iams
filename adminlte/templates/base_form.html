@@ -4,6 +4,7 @@
 {% block css %}
 <link rel="stylesheet" href="{% static 'select2/dist/css/select2.min.css' %}">
 <link rel="stylesheet" href="{% static 'select2-bootstrap-theme/dist/select2-bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'flatpickr/dist/flatpickr.min.css' %}">
 {% endblock %}
 {% block js %}
 <!--related objects action-->
@@ -17,6 +18,7 @@
 <script type="text/javascript" src="{% static 'admin/js/prepopulate.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/vendor/xregexp/xregexp.js' %}"></script>
 <script type="text/javascript" src="{% static 'select2/dist/js/select2.full.min.js' %}"></script>
+<script src="{% static 'flatpickr/dist/flatpickr.min.js' %}"></script>
 <!--form media-->
 {{ form.media }}
 {% url 'admin:jsi18n' as jsi18nurl %}
@@ -25,6 +27,7 @@
     $('select').select2({
         theme: "bootstrap"
     });
+    $('.dateinput').flatpickr();
 $('body').on('click', '.related-widget-wrapper-link.change-related', function(e) {
     e.preventDefault();
     var id = this.id.replace('change_','');
