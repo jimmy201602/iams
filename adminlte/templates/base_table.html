@@ -37,6 +37,21 @@
     }
 </style>
 {% endblock %}
+
+{% block head_ext %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        {{app_label}}
+        <small>{{title|capfirst}}</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'dynamic-list' app_label model %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">{{model}}</li>
+    </ol>
+</section>
+{{extra_content}}{% endblock %}
+
 {% block content %}
 <section class="content">
     <div class="row">
