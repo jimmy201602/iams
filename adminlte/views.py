@@ -270,7 +270,7 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
             #del datatable.columns['field_name']
         def ActionProcessor(instance,**kwargs):
             DetailButton = '<a href="{0}" role="button" class="btn btn-primary">Detail</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
-            DeleteButton = '<a href="{0}" role="button" class="btn btn-danger fm-delete" data-fm-head="Delete this {1}?" data-fm-callback="remove" data-fm-target="#object-{2}">Delete</a>'.format(
+            DeleteButton = '<a href="{0}" role="button" class="btn btn-danger fm-delete" data-fm-head="Delete this {1}?" data-fm-callback="reload" data-fm-target="#object-{2}">Delete</a>'.format(
                 reverse_lazy('dynamic-delete',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)),
                 instance._meta.model_name,
                 instance.pk)
