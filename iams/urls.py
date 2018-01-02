@@ -16,11 +16,12 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 from django.contrib.auth.views import LoginView,LogoutView
+from adminlte.views import Index
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/login/$', LoginView.as_view(template_name='admin/login.html'),name='login'),
     url(r'^accounts/logout/$',LogoutView.as_view(template_name='registration/logged_out.html'),name='logout'),
     url(r'adminlte/', include('adminlte.urls') ),
-    #url(r'cmdb/', include('cmdb.urls') ),
+    url(r'^$', Index.as_view(),name='adminlte-index'),    
 ]

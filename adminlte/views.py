@@ -73,6 +73,11 @@ def get_object_form(app_label,model,excludes=()):
 
 class Index(LoginRequiredMixin,View):
     def get(self,request):
+        title = 'Index'
+        app_label = None
+        model = None
+        model_name = None
+        menus = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}        
         return render_to_response('base_table.html',locals())
 
 class DynamicFormCreate(LoginRequiredMixin,CreateView):
@@ -112,6 +117,7 @@ class DynamicFormCreate(LoginRequiredMixin,CreateView):
         context['title'] = 'Add {0} {1}'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
+        context['model_name'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
         return context
 
@@ -157,6 +163,7 @@ class DynamicFormUpdate(LoginRequiredMixin,UpdateView):
         context['title'] = 'Change {0} {1}'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
+        context['model_name'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
         return context
 
@@ -246,6 +253,7 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
         context['title'] = '{0} {1} List'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
+        context['model_name'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
         return context
     
@@ -309,5 +317,6 @@ class DynamicDelete(LoginRequiredMixin,AjaxDeleteView):
         context['title'] = 'Delete {0} {1}'.format(self.app_label,self.model_name)
         context['app_label'] = self.app_label
         context['model'] = self.model_name
+        context['model_name'] = self.model_name
         context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
         return context
