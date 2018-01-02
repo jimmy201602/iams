@@ -9,14 +9,33 @@
 <script type="text/javascript" charset="utf8" src="{% static 'datatables/media/js/jquery.dataTables.min.js'%} "></script>
 <script type="text/javascript" charset="utf8" src="{% static 'datatables/media/js/dataTables.bootstrap.min.js'%} "></script>
 <script type="text/javascript" charset="utf8" src="{%static 'js/datatableview.js' %}"></script>
+<script type="text/javascript" src="{% static "fm/js/fm.js" %}"></script>
 <script type="application/javascript">
     $(function(){
         datatableview.initialize($('.datatable'));
+    });
+    $(function() {
+        $.fm({debug: true});
     });
 </script>
 {% endblock %}
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'datatables/media/css/dataTables.bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static "fm/css/modal.css" %}" />
+<style type="text/css">
+    #content {
+        margin: 0 auto; max-width: 800px; padding: 0 20px;
+    }
+    .object-list {
+        margin-top: 30px;
+    }
+    .object {
+        margin-bottom: 30px;
+    }
+    .object-controls {
+        margin-top: 10px;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <section class="content">
@@ -99,6 +118,7 @@
                         </tbody>
                         </table>
                         {% endif %}
+                    {% include "modal.html" %}
                 </div>
             </div>
             <!-- END EXAMPLE TABLE PORTLET-->

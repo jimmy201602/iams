@@ -22,6 +22,7 @@ from crispy_forms.bootstrap import AppendedText,PrependedText
 from django_hstore.models import DictionaryField
 from datatableview.views import DatatableView
 from datatableview import Datatable, columns
+from fm.views import  AjaxDeleteView
 
 def get_object_form(app_label,model,excludes=()):  
     ctype = ContentType.objects.get(app_label=app_label,model=model) 
@@ -269,10 +270,44 @@ class DynamicModelList(LoginRequiredMixin,DatatableView):
             #del datatable.columns['field_name']
         def ActionProcessor(instance,**kwargs):
             DetailButton = '<a href="{0}" role="button" class="btn btn-primary">Detail</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
-            DeleteButton = '<a href="{0}" role="button" class="btn btn-danger">Delete</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
+            DeleteButton = '<a href="{0}" role="button" class="btn btn-danger fm-delete" data-fm-head="Delete this {1}?" data-fm-callback="remove" data-fm-target="#object-{2}">Delete</a>'.format(
+                reverse_lazy('dynamic-delete',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)),
+                instance._meta.model_name,
+                instance.pk)
             UpdateButton = '<a href="{0}" role="button" class="btn btn-success">Update</a>'.format(reverse_lazy('dynamic-form-update',args=(instance._meta.app_label,instance._meta.model_name,instance.pk)))
             return  DetailButton + UpdateButton + DeleteButton
         
         datatable.columns['Action'] = columns.TextColumn('Action',processor=ActionProcessor)
         
         return datatable    
+
+class DynamicDelete(LoginRequiredMixin,AjaxDeleteView):
+
+    model = None
+    pk_url_kwarg = 'pk'
+    
+    def dispatch(self, request, *args, **kwargs):
+        app_label = self.kwargs.pop('app_label')
+        model = self.kwargs.pop('model')
+        self.app_label = app_label
+        self.model_name = model
+        #Raise 404 error if app_label and model does not exist!
+        try:
+            ctype = ContentType.objects.get(app_label=app_label,model=model) 
+            self.model = ctype.model_class()
+        except ObjectDoesNotExist:
+            raise Http404('Objects not found!')
+        
+        if not self.model:
+            raise Http404("You should register app in the project settings!")
+        
+        model = self.model        
+        return super(DynamicDelete,self).dispatch(request,*args,**kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(DynamicDelete, self).get_context_data(**kwargs)
+        context['title'] = 'Delete {0} {1}'.format(self.app_label,self.model_name)
+        context['app_label'] = self.app_label
+        context['model'] = self.model_name
+        context['menus'] = {'cmdb':ContentType.objects.filter(app_label='cmdb'),'permission':ContentType.objects.filter(app_label='permission')}
+        return context

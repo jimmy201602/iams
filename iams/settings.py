@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'guardian',
     'cmdb',
     'permission',
-    'django_hstore'
+    'django_hstore',
+    'fm'
 ]
 
 MIDDLEWARE = [
