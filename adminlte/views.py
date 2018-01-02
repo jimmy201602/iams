@@ -31,24 +31,6 @@ def get_object_form(app_label,model,excludes=()):
         raise Http404("You should register app in the project settings!")
     
     class _ObjectForm(forms.ModelForm):
-        
-        #def __init__(self, *args, **kwargs):
-            #Get 'initial' argument if any
-            #initial_arguments = kwargs.get('initial', None)
-            #updated_initial = {}
-            #if initial_arguments:
-                ## We have initial arguments, fetch 'user' placeholder variable if any
-                #user = initial_arguments.get('user',None)
-                ## Now update the form's initial values if user
-                #if user:
-                    #updated_initial['name'] = getattr(user, 'first_name', None)
-                    #updated_initial['email'] = getattr(user, 'email', None)
-            ## You can also initialize form fields with hardcoded values
-            ## or perform complex DB logic here to then perform initialization
-            #updated_initial['comment'] = 'Please provide a comment'
-            ## Finally update the kwargs initial reference
-            #kwargs.update(initial=updated_initial)      
-            #super(_ObjectForm, self).__init__(*args, **kwargs)
     
         def __init__(self, *args, **kwargs):
             self.helper = FormHelper()
@@ -64,10 +46,6 @@ def get_object_form(app_label,model,excludes=()):
         class Meta:
             model = model_class
             exclude = excludes
-            widgets = {
-                #'app': forms.Select(choices=[(data['app_label'],data['app_label']) for data in ContentType.objects.values('app_label').distinct()]),
-                #'model':forms.Select(choices=[(data.model,data.model) for data in ContentType.objects.all()]),
-                }
             
     return _ObjectForm
 
